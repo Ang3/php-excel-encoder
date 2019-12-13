@@ -27,7 +27,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     const XLS = 'xls';
     const XLSX = 'xlsx';
-    const WORKSHEET = 'worksheet';
+    const SPREADSHEET = 'worksheet';
 
     /**
      * Context constants.
@@ -307,7 +307,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             break;
 
             // Pas de format spécifique
-            case self::WORKSHEET:
+            case self::SPREADSHEET:
                 try {
                     // Création d'un lecteur pour le fichier temporaire
                     $reader = IOFactory::createReaderForFile($tmpFile);
@@ -442,7 +442,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     public function supportsDecoding($format)
     {
-        return in_array($format, array_merge(self::$formats, [self::WORKSHEET]));
+        return in_array($format, array_merge(self::$formats, [self::SPREADSHEET]));
     }
 
     /**

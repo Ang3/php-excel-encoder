@@ -92,7 +92,7 @@ file_put_contents('my_excel_file.xlsx', $xls);
 **Accepted formats:**
 - ```ExcelEncoder::XLS```
 - ```ExcelEncoder::XLSX```
-- ```ExcelEncoder::WORKSHEET``` *The component ```phpspreadsheet``` will try to resolve format automatically*
+- ```ExcelEncoder::SPREADSHEET``` *The component ```phpspreadsheet``` will try to resolve format automatically*
 
 Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io/en/latest/) to know wich file format can be read.
 
@@ -114,7 +114,7 @@ Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io
 // Create the encoder...
 
 // Decode data with no specific format
-$data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::WORKSHEET);
+$data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::SPREADSHEET);
 
 var_dump($data);
 

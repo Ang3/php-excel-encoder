@@ -62,8 +62,8 @@ class ExcelEncoderTest extends TestCase
         return [
             [__DIR__.'/Resources/encoded.xls', ExcelEncoder::XLS, $this->getDecodedData('Sheet_0')],
             [__DIR__.'/Resources/encoded.xlsx', ExcelEncoder::XLSX, $this->getDecodedData('Sheet_0')],
-            [__DIR__.'/Resources/encoded.csv', ExcelEncoder::WORKSHEET, $this->getDecodedData()],
-            [__DIR__.'/Resources/encoded.unknown', ExcelEncoder::WORKSHEET, $this->getDecodedData('Sheet_0')],
+            [__DIR__.'/Resources/encoded.csv', ExcelEncoder::SPREADSHEET, $this->getDecodedData()],
+            [__DIR__.'/Resources/encoded.unknown', ExcelEncoder::SPREADSHEET, $this->getDecodedData('Sheet_0')],
         ];
     }
 
