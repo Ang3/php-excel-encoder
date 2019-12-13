@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use PhpOffice\PhpSpreadsheet\Writer as Writers;
 use PhpOffice\PhpSpreadsheet\Reader as Readers;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -26,6 +27,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     const XLS = 'xls';
     const XLSX = 'xlsx';
+    const WORKSHEET = 'worksheet';
 
     /**
      * Context constants.
@@ -76,8 +78,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      * @throws InvalidArgumentException   When the format is not supported
      * @throws NotEncodableValueException When data are not valid
      * @throws RuntimeException           When data writing failed
-     *
-     * @return string
      */
     public function encode($data, $format, array $context = [])
     {
@@ -119,6 +119,12 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, gettype($sheetData)));
             }
 
+            // Si le nom de la feuille est un entier
+            if ($sheetIndex === $sheetName) {
+                // Enregistrement du titre
+                $sheetName = sprintf('Sheet_%d', $sheetIndex);
+            }
+
             // Assignation de l'onglet
             $spreadsheet->setActiveSheetIndex($sheetIndex);
 
@@ -126,7 +132,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             $worksheet = $spreadsheet->getActiveSheet();
 
             // Enregistrement du titre
-            $worksheet->setTitle(sprintf('Sheet_%d', $sheetIndex));
+            $worksheet->setTitle($sheetName);
 
             // Typage des données en tableau
             $sheetData = (array) $sheetData;
@@ -205,33 +211,30 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 ;
             }
 
-            // Si on souhaite mettre à jour la taille des colonnes automatiquement
-            if (true === $context[self::COLUMNS_AUTOSIZE_KEY]) {
-                // Pour chaque colonne contenant des données
-                for ($i = 1; $i <= Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); ++$i) {
-                    // On dimensionne automatiquement la colonne
-                    $worksheet
-                        ->getColumnDimensionByColumn($i)
-                        ->setAutoSize(true)
-                    ;
-                }
+            // Pour chaque colonne contenant des données
+            for ($i = 1; $i <= Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); ++$i) {
+                // On dimensionne automatiquement la colonne
+                $worksheet
+                    ->getColumnDimensionByColumn($i)
+                    ->setAutoSize($context[self::COLUMNS_AUTOSIZE_KEY])
+                ;
+            }
 
-                // On lance le calcul des dimensions des colonnes
-                $worksheet->calculateColumnWidths();
+            // On lance le calcul des dimensions des colonnes
+            $worksheet->calculateColumnWidths();
 
-                // Pour chaque dimension de colonne définit
-                foreach ($worksheet->getColumnDimensions() as $columnDimension) {
-                    // Récupération de la taille de la colonne
-                    $colWidth = $columnDimension->getWidth();
+            // Pour chaque dimension de colonne définit
+            foreach ($worksheet->getColumnDimensions() as $columnDimension) {
+                // Récupération de la taille de la colonne
+                $colWidth = $columnDimension->getWidth();
 
-                    // Si la taille de la colonne dépasse la taille maximale des colonnes
-                    if ($colWidth > $context[self::COLUMNS_MAXSIZE_KEY]) {
-                        // Désactivation de l'option d'autosize
-                        $columnDimension->setAutoSize(false);
+                // Si la taille de la colonne dépasse la taille maximale des colonnes
+                if ($colWidth > $context[self::COLUMNS_MAXSIZE_KEY]) {
+                    // Désactivation de l'option d'autosize
+                    $columnDimension->setAutoSize(false);
 
-                        // Enregistrement de la taille maximale pour la colonne
-                        $columnDimension->setWidth($context[self::COLUMNS_MAXSIZE_KEY]);
-                    }
+                    // Enregistrement de la taille maximale pour la colonne
+                    $columnDimension->setWidth($context[self::COLUMNS_MAXSIZE_KEY]);
                 }
             }
         }
@@ -270,8 +273,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      * @throws NotEncodableValueException When data are not valid
      * @throws InvalidArgumentException   When the format or data not supported
      * @throws RuntimeException           When data reading failed
-     *
-     * @return array
      */
     public function decode($data, $format, array $context = [])
     {
@@ -282,6 +283,12 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
         // Normalisation du contexte
         $context = $this->normalizeContext($context);
+
+        // Création du fichier temporaire de destination
+        $tmpFile = tempnam(sys_get_temp_dir(), $format);
+
+        // On insère les données dans le fichier temporaire
+        $this->filesystem->dumpFile($tmpFile, $data);
 
         // Création du lecteur selon le format
         switch ($format) {
@@ -295,18 +302,22 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 $reader = new Readers\Xls();
             break;
 
+            // Worksheet (auto)
+            case self::WORKSHEET:
+                try {
+                    // Création d'un lecteur pour le fichier temporaire
+                    $reader = IOFactory::createReaderForFile($tmpFile);
+                } catch (Exception $e) {
+                    throw new NotEncodableValueException(sprintf('Unable to determine data format - %s', $e->getMessage()), 0, $e);
+                }
+            break;
+
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
             break;
         }
 
         try {
-            // Création du fichier temporaire de destination
-            $tmpFile = tempnam(sys_get_temp_dir(), $format);
-
-            // On insère les données dans le fichier temporaire
-            $this->filesystem->dumpFile($tmpFile, $data);
-
             // Chargement du classeur
             $spreadsheet = $reader->load($tmpFile);
 
@@ -388,10 +399,10 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                     // Si on a un entête pour cette valeur
                     if (array_key_exists($key, $headers)) {
                         // Enregistrement de la valeur
-                        $labelledRows[$rowIndex-1][(string) $headers[$key]] = $value;
+                        $labelledRows[$rowIndex - 1][(string) $headers[$key]] = $value;
                     } else {
                         // Enregistrement de la valeur sans entête selon sa clé
-                        $labelledRows[$rowIndex-1][''][$key] = $value;
+                        $labelledRows[$rowIndex - 1][''][$key] = $value;
                     }
 
                     // Suppression de la valeur
@@ -404,6 +415,9 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             // Enregistrement des lignes dans les données
             $data[$loadedSheetName] = $labelledRows;
+
+            // Incrémentation de l'index de feuille
+            ++$sheetIndex;
         }
 
         // Retour des données
@@ -415,7 +429,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     public function supportsDecoding($format)
     {
-        return in_array($format, self::$formats);
+        return in_array($format, array_merge(self::$formats, [self::WORKSHEET]));
     }
 
     /**
