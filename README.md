@@ -8,7 +8,11 @@ This component helps you to generate and merge PDF's.
 
 You can install the component in 2 different ways:
 
-- Install it via Composer (ang3/php-excel-encoder on Packagist)
+- Install it via Composer
+```
+$ composer require ang3/php-excel-encoder
+```
+
 - Use the official Git repository (https://github.com/Ang3/php-excel-encoder).
 
 Then, require the vendor/autoload.php file to enable the autoloading mechanism provided by Composer. 
