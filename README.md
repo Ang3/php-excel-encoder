@@ -144,7 +144,9 @@ var_dump($data);
 ## Run tests
 
 ```$ git clone https://github.com/Ang3/php-excel-encoder.git```
+
 ```$ composer install```
+
 ```$ vendor/bin/simple-phpunit```
 
 That's it!
