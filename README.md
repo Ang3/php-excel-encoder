@@ -105,6 +105,8 @@ Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io
 - SYLK
 - CSV
 
+**/!\ When the format does not support multi-sheets (CSV for example), the only one sheet is called "Worksheet".**
+
 ```php
 <?php
 // Create the encoder...
