@@ -27,7 +27,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     const XLS = 'xls';
     const XLSX = 'xlsx';
-    const SPREADSHEET = 'worksheet';
+    const SPREADSHEET = 'spreadsheet';
 
     /**
      * Context constants.
