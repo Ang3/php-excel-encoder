@@ -5,7 +5,6 @@ namespace Ang3\Component\Serializer\Encoder;
 use Exception;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
@@ -31,7 +30,12 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     /**
      * Context constants.
      */
-    const KEY_SEPARATOR = '.';
+    const NB_HEADERS_ROW_KEY = 'nb_headers_row';
+    const FLATTENED_HEADERS_SEPARATOR_KEY = 'flattened_separator_key';
+    const HEADERS_IN_BOLD_KEY = 'headers_in_bold';
+    const HEADERS_HORIZONTAL_ALIGNMENT_KEY = 'headers_horizontal_alignment';
+    const COLUMNS_AUTOSIZE_KEY = 'columns_autosize';
+    const COLUMNS_MAXSIZE_KEY = 'columns_maxsize';
 
     /**
      * @static
@@ -44,19 +48,26 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     ];
 
     /**
+     * @var array
+     */
+    private $defaultContext = [
+        self::NB_HEADERS_ROW_KEY => 1,
+        self::FLATTENED_HEADERS_SEPARATOR_KEY => '.',
+        self::HEADERS_IN_BOLD_KEY => true,
+        self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => 'center',
+        self::COLUMNS_AUTOSIZE_KEY => true,
+        self::COLUMNS_MAXSIZE_KEY => 50,
+    ];
+
+    /**
      * @var Filesystem
      */
     private $filesystem;
 
-    /**
-     * @var ObjectNormalizer
-     */
-    private $objectNormalizer;
-
-    public function __construct(ObjectNormalizer $objectNormalizer = null)
+    public function __construct(array $defaultContext = [])
     {
+        $this->defaultContext = array_merge($this->defaultContext, $defaultContext);
         $this->filesystem = new Filesystem();
-        $this->objectNormalizer = $objectNormalizer ?: new ObjectNormalizer();
     }
 
     /**
@@ -74,6 +85,9 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         if (!is_iterable($data)) {
             throw new NotEncodableValueException(sprintf('Expected data of type iterable, %s given', gettype($data)));
         }
+
+        // Normalisation du contexte
+        $context = $this->normalizeContext($context);
 
         // Création du gestionnaire de classeur
         $spreadsheet = new Spreadsheet();
@@ -95,11 +109,14 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             break;
         }
 
+        // Initialisation de l'index de la feuille
+        $sheetIndex = 0;
+
         // Pour chaque onglet dans les données
-        foreach ($data as $sheetIndex => $sheetData) {
+        foreach ($data as $sheetName => $sheetData) {
             // Si les données de l'onglet ne sont pas sous forme itérable
             if (!is_iterable($sheetData)) {
-                throw new NotEncodableValueException(sprintf('Expected data sheet #%d of type "iterable", "%s" given', $sheetIndex, gettype($sheetData)));
+                throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, gettype($sheetData)));
             }
 
             // Assignation de l'onglet
@@ -125,7 +142,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 $flattened = [];
 
                 // On aplatit avec le tableau initialisé
-                $this->flatten($cells, $flattened, $context['key_separator'] ?? '.');
+                $this->flatten($cells, $flattened, $context[self::FLATTENED_HEADERS_SEPARATOR_KEY]);
 
                 // Mise-à-jour de la valeur par l'applatissement
                 $sheetData[$rowIndex] = $flattened;
@@ -154,25 +171,68 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             // Récupération des styles des entêtes
             $headerLineStyle = $worksheet->getStyle('A1:'.$worksheet->getHighestDataColumn().'1');
 
-            // On centre les entêtes
-            $headerLineStyle
-                ->getAlignment()
-                ->setHorizontal(Alignment::HORIZONTAL_CENTER)
-            ;
+            // Si on a une valeur pour l'alignement horizontal des entêtes
+            if ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
+                // Selon l'alignement souhaité
+                switch ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
+                    case 'left':
+                        $alignment = Alignment::HORIZONTAL_LEFT;
+                    break;
+                    case 'center':
+                        $alignment = Alignment::HORIZONTAL_CENTER;
+                    break;
+                    case 'right':
+                        $alignment = Alignment::HORIZONTAL_RIGHT;
+                    break;
+                    default:
+                        throw new InvalidArgumentException(sprintf('The value of context key "%s" is not valid (possible values: "left", "center" or "right")', self::HEADERS_HORIZONTAL_ALIGNMENT_KEY));
+                    break;
+                }
 
-            // Mise en gras des entêtes
-            $headerLineStyle
-                ->getFont()
-                ->setBold(true)
-            ;
-
-            // Pour chaque colonne contenant des données
-            for ($i = 1; $i <= Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); ++$i) {
-                // On dimensionne automatiquement la colonne
-                $worksheet
-                    ->getColumnDimensionByColumn($i)
-                    ->setAutoSize(true)
+                // On centre les entêtes
+                $headerLineStyle
+                    ->getAlignment()
+                    ->setHorizontal($alignment)
                 ;
+            }
+
+            // Si on souhaite mettre les entêtes en gras
+            if (true === $context[self::HEADERS_IN_BOLD_KEY]) {
+                // Mise en gras des entêtes
+                $headerLineStyle
+                    ->getFont()
+                    ->setBold(true)
+                ;
+            }
+
+            // Si on souhaite mettre à jour la taille des colonnes automatiquement
+            if (true === $context[self::COLUMNS_AUTOSIZE_KEY]) {
+                // Pour chaque colonne contenant des données
+                for ($i = 1; $i <= Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); ++$i) {
+                    // On dimensionne automatiquement la colonne
+                    $worksheet
+                        ->getColumnDimensionByColumn($i)
+                        ->setAutoSize(true)
+                    ;
+                }
+
+                // On lance le calcul des dimensions des colonnes
+                $worksheet->calculateColumnWidths();
+
+                // Pour chaque dimension de colonne définit
+                foreach ($worksheet->getColumnDimensions() as $columnDimension) {
+                    // Récupération de la taille de la colonne
+                    $colWidth = $columnDimension->getWidth();
+
+                    // Si la taille de la colonne dépasse la taille maximale des colonnes
+                    if ($colWidth > $context[self::COLUMNS_MAXSIZE_KEY]) {
+                        // Désactivation de l'option d'autosize
+                        $columnDimension->setAutoSize(false);
+
+                        // Enregistrement de la taille maximale pour la colonne
+                        $columnDimension->setWidth($context[self::COLUMNS_MAXSIZE_KEY]);
+                    }
+                }
             }
         }
 
@@ -220,6 +280,9 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             throw new NotEncodableValueException(sprintf('Expected data of type scalar, %s given', gettype($data)));
         }
 
+        // Normalisation du contexte
+        $context = $this->normalizeContext($context);
+
         // Création du lecteur selon le format
         switch ($format) {
             // Excel 2007
@@ -256,9 +319,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         // Récupération du nom des onglets
         $loadedSheetNames = $spreadsheet->getSheetNames();
 
-        // Relevé du nombre de lignes pour l'entête
-        $nbHeaderRows = $context['nb_header_rows'] ?? 2;
-
         // Initialisation des données
         $data = [];
 
@@ -277,9 +337,9 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             }
 
             // Si on a pas d'entêtes
-            if (null === $nbHeaderRows) {
+            if (0 === $context[self::NB_HEADERS_ROW_KEY]) {
                 // Enregistrement des lignes de la feuilles dans les données
-                $data[$sheetIndex] = $sheetData;
+                $data[$loadedSheetName] = $sheetData;
 
                 // Feuille suivante
                 continue;
@@ -292,13 +352,15 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             $headers = [];
 
             // Initialisation du nombre de ligne d'entêtes enresgitrées
-            $headerRowsCount = 1;
+            $headerRowsCount = 0;
 
             // Pour chaque ligne de données
             foreach ($sheetData as $rowIndex => $cells) {
+                // Typage de l'index de la ligne en entier
                 $rowIndex = (int) $rowIndex;
+
                 // Si le nombre de lignes d'entêtes attendus est supérieur au nombre de lignes d'entête enregistrés
-                if (((int) $nbHeaderRows) > $headerRowsCount) {
+                if ($context[self::NB_HEADERS_ROW_KEY] > $headerRowsCount) {
                     // Pour chaque valeur de la ligne
                     foreach ($cells as $key => $value) {
                         // Si pas de valeur
@@ -326,10 +388,10 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                     // Si on a un entête pour cette valeur
                     if (array_key_exists($key, $headers)) {
                         // Enregistrement de la valeur
-                        $labelledRows[$rowIndex][(string) $headers[$key]] = $value;
+                        $labelledRows[$rowIndex-1][(string) $headers[$key]] = $value;
                     } else {
                         // Enregistrement de la valeur sans entête selon sa clé
-                        $labelledRows[$rowIndex][''][$key] = $value;
+                        $labelledRows[$rowIndex-1][''][$key] = $value;
                     }
 
                     // Suppression de la valeur
@@ -361,14 +423,14 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      *
      * @return array
      */
-    public function flatten(iterable $data, array &$result = [], string $keySeparator = self::KEY_SEPARATOR, string $parentKey = '')
+    public function flatten(iterable $data, array &$result = [], string $keySeparator, string $parentKey = '')
     {
         // Pour chaque valeur
         foreach ($data as $key => $value) {
             // Si la valeur est un objet
             if (is_object($value)) {
                 // Normalisation de l'objet
-                $value = $this->objectNormalizer->normalize($value);
+                $value = get_object_vars($value);
             }
 
             // Si on a encore une valeur itérable
@@ -391,5 +453,32 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             // Enregistrement de la clé en faisant attention aux clé scalaires et aux valeurs booléennes
             $result[sprintf('="%s"', $newKey)] = false === $value ? 0 : (true === $value ? 1 : $value);
         }
+    }
+
+    /**
+     * @internal
+     *
+     * @return array
+     */
+    private function normalizeContext(array $context = [])
+    {
+        return [
+            self::NB_HEADERS_ROW_KEY => $this->getContextValue($context, self::NB_HEADERS_ROW_KEY),
+            self::FLATTENED_HEADERS_SEPARATOR_KEY => (string) $this->getContextValue($context, self::FLATTENED_HEADERS_SEPARATOR_KEY),
+            self::HEADERS_IN_BOLD_KEY => (bool) $this->getContextValue($context, self::HEADERS_IN_BOLD_KEY),
+            self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => (string) $this->getContextValue($context, self::HEADERS_HORIZONTAL_ALIGNMENT_KEY),
+            self::COLUMNS_AUTOSIZE_KEY => (bool) $this->getContextValue($context, self::COLUMNS_AUTOSIZE_KEY),
+            self::COLUMNS_MAXSIZE_KEY => (int) $this->getContextValue($context, self::COLUMNS_MAXSIZE_KEY),
+        ];
+    }
+
+    /**
+     * @internal
+     *
+     * @return mixed
+     */
+    private function getContextValue(array $context = [], $key)
+    {
+        return $context[$key] ?? $this->defaultContext[$key];
     }
 }
