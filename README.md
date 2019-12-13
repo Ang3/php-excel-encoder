@@ -49,13 +49,7 @@ $encoder = new ExcelEncoder($defaultContext = []);
 
 ```php
 <?php
-
-require_once 'vendor/autoload.php';
-
-use Ang3\Component\Serializer\Encoder\ExcelEncoder;
-
-// Create the encoder
-$encoder = new ExcelEncoder;
+// Create the encoder...
 
 // Test data
 $data = [
@@ -112,10 +106,7 @@ Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io
 
 ```php
 <?php
-// ...
-
-// Create the encoder
-$encoder = new ExcelEncoder;
+// Create the encoder...
 
 // Decode data with no specific format
 $data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::WORKSHEET);
