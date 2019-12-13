@@ -1,0 +1,30 @@
+{
+	"name": "ang3/php-excel-encoder",
+	"type": "library",
+	"homepage": "https://github.com/Ang3/php-excel-encoder",
+	"description": "PHP Excel encoder",
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "Joanis ROUANET",
+			"email": "joanis.ang3@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {"Ang3\\Component\\Serializer\\Encoder\\": "src/"}
+	},
+	"autoload-dev": {
+		"psr-4": { "Ang3\\Component\\Serializer\\Encoder\\Tests\\": "tests/" }
+	},
+    "require": {
+    	"php": "^7.1",
+		"phpoffice/phpspreadsheet": "^1.10",
+		"symfony/serializer": "^3.4 || ^4.0 || ^5.0",
+		"symfony/filesystem": "^3.4 || ^4.0",
+		"symfony/property-access": "^5.0"
+    },
+    "require-dev": {
+		"symfony/phpunit-bridge": "^3.4 || ^4.0",
+		"symfony/var-dumper": "^3.4 || ^4.0"
+    }
+}
