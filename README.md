@@ -2,9 +2,9 @@
 
 [![Build Status](https://travis-ci.org/Ang3/php-excel-encoder.svg?branch=master)](https://travis-ci.org/Ang3/php-excel-encoder) [![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder) [![Latest Unstable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/unstable)](https://packagist.org/packages/ang3/php-excel-encoder) [![Total Downloads](https://poser.pugx.org/ang3/php-excel-encoder/downloads)](https://packagist.org/packages/ang3/php-excel-encoder)
 
-Encode and decode xls/xlsx files and more thanks to the component ```phpoffice/phpspreadsheet```.
+Encode and decode xls/xlsx files and more thanks to the component [phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
 
-This component uses the component ```symfony/serializer``` - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
+Also, this component uses the component ```symfony/serializer``` - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
 
 ## Installation
 
