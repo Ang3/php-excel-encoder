@@ -490,7 +490,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     private function normalizeContext(array $context = [])
     {
         return [
-            self::NB_HEADERS_ROW_KEY => $this->getContextValue($context, self::NB_HEADERS_ROW_KEY),
+            self::NB_HEADERS_ROW_KEY => (int) $this->getContextValue($context, self::NB_HEADERS_ROW_KEY),
             self::FLATTENED_HEADERS_SEPARATOR_KEY => (string) $this->getContextValue($context, self::FLATTENED_HEADERS_SEPARATOR_KEY),
             self::HEADERS_IN_BOLD_KEY => (bool) $this->getContextValue($context, self::HEADERS_IN_BOLD_KEY),
             self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => (string) $this->getContextValue($context, self::HEADERS_HORIZONTAL_ALIGNMENT_KEY),
