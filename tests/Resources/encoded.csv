@@ -1,0 +1,2 @@
+bool;int;float;string;object.date;object.timezone_type;object.timezone;array.bool;array.int;array.float;array.string;array.object.date;array.object.timezone_type;array.object.timezone;array.array.0
+0;1;1.618;Hello;2000-01-01 13:37:00.000000;3;Europe/Berlin;1;3;3.14;World;2000-01-01 13:37:00.000000;3;Europe/Berlin;again

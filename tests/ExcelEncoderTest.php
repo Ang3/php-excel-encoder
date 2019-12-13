@@ -23,20 +23,6 @@ class ExcelEncoderTest extends TestCase
     private $encoder;
 
     /**
-     * @static
-     *
-     * @var array
-     */
-    private static $initialData = [];
-
-    /**
-     * @static
-     *
-     * @var array
-     */
-    private static $decodedData = [];
-
-    /**
      * Set up test.
      */
     public function setUp(): void
@@ -46,13 +32,57 @@ class ExcelEncoderTest extends TestCase
     }
 
     /**
-     * @static
-     *
-     * Set up test.
+     * @return array
      */
-    public static function setUpBeforeClass(): void
+    public function dataEncodingProvider()
     {
-        self::$initialData = [[
+        return [
+            [ExcelEncoder::XLS],
+            [ExcelEncoder::XLSX],
+        ];
+    }
+
+    /**
+     * @dataProvider dataEncodingProvider
+     */
+    public function testEncode(string $format)
+    {
+        // Encodage
+        $xls = $this->encoder->encode($this->getInitialData(), 'xlsx');
+
+        // Assertions
+        $this->assertIsString('string', (string) $xls);
+    }
+
+    /**
+     * @return array
+     */
+    public function dataDecodingProvider()
+    {
+        return [
+            [__DIR__.'/Resources/encoded.xls', ExcelEncoder::XLS, $this->getDecodedData('Sheet_0')],
+            [__DIR__.'/Resources/encoded.xlsx', ExcelEncoder::XLSX, $this->getDecodedData('Sheet_0')],
+            [__DIR__.'/Resources/encoded.csv', ExcelEncoder::WORKSHEET, $this->getDecodedData()],
+            [__DIR__.'/Resources/encoded.unknown', ExcelEncoder::WORKSHEET, $this->getDecodedData('Sheet_0')],
+        ];
+    }
+
+    /**
+     * @dataProvider dataDecodingProvider
+     */
+    public function testDecode(string $file, string $format, array $result)
+    {
+        $this->assertEquals($result, $this->encoder->decode((string) file_get_contents($file), $format));
+    }
+
+    /**
+     * @internal
+     *
+     * @return array
+     */
+    private function getInitialData()
+    {
+        return [[
             [
                 'bool' => false,
                 'int' => 1,
@@ -71,9 +101,17 @@ class ExcelEncoderTest extends TestCase
                 ],
             ],
         ]];
+    }
 
-        self::$decodedData = [
-            'Sheet_0' => [
+    /**
+     * @internal
+     *
+     * @return array
+     */
+    private function getDecodedData(string $sheetName = 'Worksheet')
+    {
+        return [
+            $sheetName => [
                 [
                     'bool' => 0,
                     'int' => 1,
@@ -93,49 +131,5 @@ class ExcelEncoderTest extends TestCase
                 ],
             ],
         ];
-    }
-
-    /**
-     * @return array
-     */
-    public function dataEncodingProvider()
-    {
-        return [
-            [ExcelEncoder::XLS],
-            [ExcelEncoder::XLSX],
-            [ExcelEncoder::WORKSHEET],
-        ];
-    }
-
-    /**
-     * @dataProvider dataEncodingProvider
-     */
-    public function testEncode(string $format)
-    {
-        // Encodage
-        $xls = $this->encoder->encode(self::$initialData, 'xlsx');
-
-        // Assertions
-        $this->assertIsString('string', (string) $xls);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataDecodingProvider()
-    {
-        return [
-            [__DIR__.'/Resources/encoded.xls', ExcelEncoder::XLS],
-            [__DIR__.'/Resources/encoded.xlsx', ExcelEncoder::XLSX],
-            [__DIR__.'/Resources/encoded.unknown', ExcelEncoder::WORKSHEET],
-        ];
-    }
-
-    /**
-     * @dataProvider dataDecodingProvider
-     */
-    public function testDecode(string $file, string $format)
-    {
-        $this->assertEquals(self::$decodedData, $this->encoder->decode((string) file_get_contents($file), $format));
     }
 }

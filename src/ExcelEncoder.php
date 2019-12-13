@@ -38,6 +38,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     const HEADERS_HORIZONTAL_ALIGNMENT_KEY = 'headers_horizontal_alignment';
     const COLUMNS_AUTOSIZE_KEY = 'columns_autosize';
     const COLUMNS_MAXSIZE_KEY = 'columns_maxsize';
+    const CSV_DELIMITER_KEY = 'csv_delimiter';
+    const CSV_ENCLOSURE_KEY = 'csv_enclosure';
 
     /**
      * @static
@@ -59,6 +61,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => 'center',
         self::COLUMNS_AUTOSIZE_KEY => true,
         self::COLUMNS_MAXSIZE_KEY => 50,
+        self::CSV_DELIMITER_KEY => ';',
+        self::CSV_ENCLOSURE_KEY => '"',
     ];
 
     /**
@@ -302,7 +306,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 $reader = new Readers\Xls();
             break;
 
-            // Worksheet (auto)
+            // Pas de format spécifique
             case self::WORKSHEET:
                 try {
                     // Création d'un lecteur pour le fichier temporaire
@@ -315,6 +319,15 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
             break;
+        }
+
+        // Si le lecteur est pour du CSV
+        if ($reader instanceof Readers\Csv) {
+            // On configure le délimiter et l'enclosure
+            $reader
+                ->setDelimiter($context[self::CSV_DELIMITER_KEY])
+                ->setEnclosure($context[self::CSV_ENCLOSURE_KEY])
+            ;
         }
 
         try {
@@ -483,6 +496,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => (string) $this->getContextValue($context, self::HEADERS_HORIZONTAL_ALIGNMENT_KEY),
             self::COLUMNS_AUTOSIZE_KEY => (bool) $this->getContextValue($context, self::COLUMNS_AUTOSIZE_KEY),
             self::COLUMNS_MAXSIZE_KEY => (int) $this->getContextValue($context, self::COLUMNS_MAXSIZE_KEY),
+            self::CSV_DELIMITER_KEY => (string) $this->getContextValue($context, self::CSV_DELIMITER_KEY),
+            self::CSV_ENCLOSURE_KEY => (string) $this->getContextValue($context, self::CSV_ENCLOSURE_KEY),
         ];
     }
 

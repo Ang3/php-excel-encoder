@@ -40,6 +40,8 @@ $encoder = new ExcelEncoder($defaultContext = []);
 - ```ExcelEncoder::HEADERS_HORIZONTAL_ALIGNMENT_KEY``` (string): put headers in bold (encoding only: ```left```, ```center``` or ```right```) [default: ```center```]
 - ```ExcelEncoder::COLUMNS_AUTOSIZE_KEY``` (boolean): column autosize feature (encoding only) [default: ```true```]
 - ```ExcelEncoder::COLUMNS_MAXSIZE_KEY``` (integer): column maxsize feature (encoding only) [default: ```50```]
+- ```ExcelEncoder::CSV_DELIMITER_KEY``` (string): columns separator (CSV decoding only) [default: ```;```]
+- ```ExcelEncoder::CSV_ENCLOSURE_KEY``` (string): Cell values enclosure (CSV decoding only) [default: ```"```]
 
 ### Encoding
 
@@ -89,7 +91,7 @@ file_put_contents('my_excel_file.xlsx', $xls);
 **Accepted formats:**
 - ```ExcelEncoder::XLS```
 - ```ExcelEncoder::XLSX```
-- ```ExcelEncoder::WORKSHEET``` *The component will try to resolve format from ```phpspreadsheet```*
+- ```ExcelEncoder::WORKSHEET``` *The component ```phpspreadsheet``` will try to resolve format automatically*
 
 Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io/en/latest/) to know wich file format can be read.
 
@@ -138,5 +140,11 @@ var_dump($data);
 // }
 
 ```
+
+## Run tests
+
+```$ git clone https://github.com/Ang3/php-excel-encoder.git```
+```$ composer install```
+```$ vendor/bin/simple-phpunit```
 
 That's it!
