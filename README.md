@@ -80,9 +80,8 @@ $data = [
 
 // Encode data with specific format
 $xls = $encoder->encode($data, ExcelEncoder::XLSX);
-//
 
-// Put the content in a file with format extension
+// Put the content in a file with format extension for example
 file_put_contents('my_excel_file.xlsx', $xls);
 ```
 
