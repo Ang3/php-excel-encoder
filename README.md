@@ -33,19 +33,19 @@ use Ang3\Component\Serializer\Encoder\ExcelEncoder;
 $encoder = new ExcelEncoder($defaultContext = []);
 ```
 
-Context parameters:
-- ```ExcelEncoder::NB_HEADERS_ROW_KEY```: Count of header rows [default: ```1```]
-- ```ExcelEncoder::FLATTENED_HEADERS_SEPARATOR_KEY```: separator for flattened entries key [default: ```.```]
-- ```ExcelEncoder::HEADERS_IN_BOLD_KEY```: put headers in bold (encoding only: boolean) [default: ```true```]
-- ```ExcelEncoder::HEADERS_HORIZONTAL_ALIGNMENT_KEY```: put headers in bold (encoding only: ```left```, ```center``` or ```right```) [default: ```center```]
-- ```ExcelEncoder::COLUMNS_AUTOSIZE_KEY```: column autosize feature (encoding only: boolean) [default: ```true```]
-- ```ExcelEncoder::COLUMNS_MAXSIZE_KEY```: column maxsize feature (encoding only: integer) [default: ```50```]
+**Context parameters:**
+- ```ExcelEncoder::NB_HEADERS_ROW_KEY``` (boolean): Count of header rows [default: ```1```]
+- ```ExcelEncoder::FLATTENED_HEADERS_SEPARATOR_KEY``` (string): separator for flattened entries key [default: ```.```]
+- ```ExcelEncoder::HEADERS_IN_BOLD_KEY``` (boolean): put headers in bold (encoding only) [default: ```true```]
+- ```ExcelEncoder::HEADERS_HORIZONTAL_ALIGNMENT_KEY``` (string): put headers in bold (encoding only: ```left```, ```center``` or ```right```) [default: ```center```]
+- ```ExcelEncoder::COLUMNS_AUTOSIZE_KEY``` (boolean): column autosize feature (encoding only) [default: ```true```]
+- ```ExcelEncoder::COLUMNS_MAXSIZE_KEY``` (integer): column maxsize feature (encoding only) [default: ```50```]
 
 ### Encoding
 
-Accepted formats:
-- ```ExcelEncoder::XLS```: ```xls```
-- ```ExcelEncoder::XLSX```: ```xlsx```
+**Accepted formats:**
+- ```ExcelEncoder::XLS```
+- ```ExcelEncoder::XLSX```
 
 ```php
 <?php
@@ -92,14 +92,14 @@ file_put_contents('my_excel_file.xlsx', $xls);
 
 ### Decoding
 
-Accepted formats:
-- ```ExcelEncoder::XLS```: ```xls```
-- ```ExcelEncoder::XLSX```: ```xlsx```
-- ```ExcelEncoder::WORKSHEET```: ```worksheet``` (the component will try to resolve format from ```phpspreadsheet```)
+**Accepted formats:**
+- ```ExcelEncoder::XLS```
+- ```ExcelEncoder::XLSX```
+- ```ExcelEncoder::WORKSHEET``` *The component will try to resolve format from ```phpspreadsheet```*
 
 Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io/en/latest/) to know wich file format can be read.
 
-Accepted data format in 2019:
+**Accepted data format in 2019:**
 - Open Document Format/OASIS (.ods)
 - Office Open XML (.xlsx) Excel 2007 and above
 - BIFF 8 (.xls) Excel 97 and above
