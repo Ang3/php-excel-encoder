@@ -18,7 +18,7 @@
 	},
     "require": {
     	"php": "^7.1",
-		"phpoffice/phpspreadsheet": "^1.10",
+		"phpoffice/phpspreadsheet": "^1.8.2 || ^1.9",
 		"symfony/serializer": "^4.2",
 		"symfony/filesystem": "^4.0",
 		"symfony/property-access": "^4.0"
