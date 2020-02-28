@@ -17,14 +17,14 @@
 		"psr-4": { "Ang3\\Component\\Serializer\\Encoder\\Tests\\": "tests/" }
 	},
     "require": {
-    	"php": ">=7.1.3",
+    	"php": "^7.1",
 		"phpoffice/phpspreadsheet": "^1.9",
 		"symfony/serializer": "^4.1",
-		"symfony/filesystem": "^4.0",
+		"symfony/filesystem": "^3.0 || ^4.0",
 		"symfony/property-access": "^4.0"
     },
     "require-dev": {
-		"symfony/phpunit-bridge": "^5.0 || ^6.0",
+		"symfony/phpunit-bridge": "^4.2.7 || ^4.3 || ^5.0 || ^6.0",
 		"symfony/var-dumper": "^3.2 || ^4.0 || ^5.0",
 		"ang3/php-dev-binaries": "^1.0"
     }
