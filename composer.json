@@ -19,9 +19,9 @@
     "require": {
     	"php": "^7.2",
 		"phpoffice/phpspreadsheet": "^1.9",
-		"symfony/serializer": "^4.1",
-		"symfony/filesystem": "^4.0",
-		"symfony/property-access": "^4.0"
+		"symfony/serializer": "^4.1 || ^5.0",
+		"symfony/filesystem": "^4.0 || ^5.0",
+		"symfony/property-access": "^4.0 || ^5.0"
     },
     "require-dev": {
 		"symfony/phpunit-bridge": "^4.2.7 || ^4.3 || ^5.0 || ^6.0",
