@@ -147,3 +147,15 @@ var_dump($data);
 ```$ vendor/bin/simple-phpunit```
 
 That's it!
+
+## Update logs
+
+**v1.0.1**
+
+- Fix code
+- Fix dependencies
+- Updated ```README.md```
+
+**v1.0.0**
+
+- First release
