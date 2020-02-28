@@ -4,21 +4,15 @@
 
 Encode and decode xls/xlsx files and more thanks to the component [phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
 
-Also, this component uses the component ```symfony/serializer``` - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
+Also, this component uses the component Serializer from package [```symfony/serializer```](https://packagist.org/packages/symfony/serializer) - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
 
 ## Installation
 
-You can install the component in 2 different ways:
-
-- Install it via Composer
-```
-$ composer require ang3/php-excel-encoder
+```shell
+composer require ang3/php-excel-encoder
 ```
 
-- Use the official Git repository (https://github.com/Ang3/php-excel-encoder).
-
-Then, require the vendor/autoload.php file to enable the autoloading mechanism provided by Composer. 
-Otherwise, your application won't be able to find the classes of this component.
+If you install this component outside of a Symfony application, you must require the vendor/autoload.php file in your code to enable the class autoloading mechanism provided by Composer. Read [this article](https://symfony.com/doc/current/components/using_components.html) for more details.
 
 ## Usage
 
