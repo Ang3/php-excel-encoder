@@ -1,3 +1,4 @@
 parameters:
   paths:
     - %currentWorkingDirectory%/src
+  checkMissingIterableValueType: false

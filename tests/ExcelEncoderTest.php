@@ -2,10 +2,10 @@
 
 namespace Ang3\Component\Serializer\Encoder\Tests;
 
-use DateTime;
 use Ang3\Component\Serializer\Encoder\ExcelEncoder;
-use Symfony\Component\Filesystem\Filesystem;
+use DateTime;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Joanis ROUANET
@@ -31,10 +31,7 @@ class ExcelEncoderTest extends TestCase
         $this->encoder = new ExcelEncoder();
     }
 
-    /**
-     * @return array
-     */
-    public function dataEncodingProvider()
+    public function dataEncodingProvider(): array
     {
         return [
             [ExcelEncoder::XLS],
@@ -45,7 +42,7 @@ class ExcelEncoderTest extends TestCase
     /**
      * @dataProvider dataEncodingProvider
      */
-    public function testEncode(string $format)
+    public function testEncode(string $format): void
     {
         // Encodage
         $xls = $this->encoder->encode($this->getInitialData(), 'xlsx');
@@ -54,10 +51,7 @@ class ExcelEncoderTest extends TestCase
         $this->assertIsString('string', (string) $xls);
     }
 
-    /**
-     * @return array
-     */
-    public function dataDecodingProvider()
+    public function dataDecodingProvider(): array
     {
         return [
             [__DIR__.'/Resources/encoded.xls', ExcelEncoder::XLS, $this->getDecodedData('Sheet_0')],
@@ -70,17 +64,15 @@ class ExcelEncoderTest extends TestCase
     /**
      * @dataProvider dataDecodingProvider
      */
-    public function testDecode(string $file, string $format, array $result)
+    public function testDecode(string $file, string $format, array $result): void
     {
         $this->assertEquals($result, $this->encoder->decode((string) file_get_contents($file), $format));
     }
 
     /**
      * @internal
-     *
-     * @return array
      */
-    private function getInitialData()
+    private function getInitialData(): array
     {
         return [[
             [
@@ -105,10 +97,8 @@ class ExcelEncoderTest extends TestCase
 
     /**
      * @internal
-     *
-     * @return array
      */
-    private function getDecodedData(string $sheetName = 'Worksheet')
+    private function getDecodedData(string $sheetName = 'Worksheet'): array
     {
         return [
             $sheetName => [

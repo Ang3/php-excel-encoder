@@ -3,19 +3,19 @@
 namespace Ang3\Component\Serializer\Encoder;
 
 use Exception;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader as Readers;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Writer as Writers;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\RuntimeException;
-use Symfony\Component\Filesystem\Filesystem;
-use PhpOffice\PhpSpreadsheet\Writer as Writers;
-use PhpOffice\PhpSpreadsheet\Reader as Readers;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /**
  * @author Joanis ROUANET
@@ -110,7 +110,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
-            break;
         }
 
         // Initialisation de l'index de la feuille
@@ -161,15 +160,13 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             // Initialisation des entêtes
             $headers = [];
 
-            // Si on a pas encore d'entêtes
-            if (!$headers) {
-                foreach ($sheetData as $rowIndex => $cells) {
-                    // Récupération des entêtes par la clé des celulles
-                    $headers = array_keys($cells);
+            // Pour chaque ligne de données
+            foreach ($sheetData as $rowIndex => $cells) {
+                // Récupération des entêtes par la clé des celulles
+                $headers = array_keys($cells);
 
-                    // On stoppe
-                    break;
-                }
+                // On stoppe
+                break;
             }
 
             // On ajoute la entêtes en début de données
@@ -196,7 +193,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                     break;
                     default:
                         throw new InvalidArgumentException(sprintf('The value of context key "%s" is not valid (possible values: "left", "center" or "right")', self::HEADERS_HORIZONTAL_ALIGNMENT_KEY));
-                    break;
                 }
 
                 // On centre les entêtes
@@ -289,7 +285,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         $context = $this->normalizeContext($context);
 
         // Création du fichier temporaire de destination
-        $tmpFile = tempnam(sys_get_temp_dir(), $format);
+        $tmpFile = (string) tempnam(sys_get_temp_dir(), $format);
 
         // On insère les données dans le fichier temporaire
         $this->filesystem->dumpFile($tmpFile, $data);
@@ -318,7 +314,6 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
-            break;
         }
 
         // Si le lecteur est pour du CSV
@@ -447,10 +442,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
     /**
      * @throws NotNormalizableValueException when a value is not valid
-     *
-     * @return array
      */
-    public function flatten(iterable $data, array &$result = [], string $keySeparator, string $parentKey = '')
+    public function flatten(iterable $data, array &$result = [], string $keySeparator, string $parentKey = ''): void
     {
         // Pour chaque valeur
         foreach ($data as $key => $value) {
@@ -484,10 +477,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
     /**
      * @internal
-     *
-     * @return array
      */
-    private function normalizeContext(array $context = [])
+    private function normalizeContext(array $context = []): array
     {
         return [
             self::NB_HEADERS_ROW_KEY => (int) $this->getContextValue($context, self::NB_HEADERS_ROW_KEY),
@@ -503,6 +494,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
     /**
      * @internal
+     *
+     * @param scalar $key
      *
      * @return mixed
      */

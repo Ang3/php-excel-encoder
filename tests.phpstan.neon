@@ -3,3 +3,4 @@ parameters:
     - vendor/bin/.phpunit/phpunit-8.3-0/vendor/autoload.php
   paths:
     - %currentWorkingDirectory%/tests
+  checkMissingIterableValueType: false
