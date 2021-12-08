@@ -150,6 +150,10 @@ That's it!
 
 ## Update logs
 
+**v1.0.3**
+
+- Updated ```composer.json``` to support PHP ```8.0```
+
 **v1.0.2**
 
 - Updated ```composer.json``` to support Symfony components ```^5.0```

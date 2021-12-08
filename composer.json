@@ -17,7 +17,7 @@
 		"psr-4": { "Ang3\\Component\\Serializer\\Encoder\\Tests\\": "tests/" }
 	},
     "require": {
-    	"php": "^7.2",
+    	"php": "^7.2 || ^8.0",
 		"phpoffice/phpspreadsheet": "^1.9",
 		"symfony/serializer": "^4.1 || ^5.0",
 		"symfony/filesystem": "^4.0 || ^5.0",
