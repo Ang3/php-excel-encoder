@@ -30,14 +30,12 @@ $encoder = new ExcelEncoder($defaultContext = []);
 ```
 
 **Context parameters:**
-- ```ExcelEncoder::NB_HEADERS_ROW_KEY``` (boolean): Count of header rows [default: ```1```]
+- ```ExcelEncoder::AS_COLLECTION_KEY``` (boolean): Load data as collection [default: ```true```]
 - ```ExcelEncoder::FLATTENED_HEADERS_SEPARATOR_KEY``` (string): separator for flattened entries key [default: ```.```]
 - ```ExcelEncoder::HEADERS_IN_BOLD_KEY``` (boolean): put headers in bold (encoding only) [default: ```true```]
 - ```ExcelEncoder::HEADERS_HORIZONTAL_ALIGNMENT_KEY``` (string): put headers in bold (encoding only: ```left```, ```center``` or ```right```) [default: ```center```]
 - ```ExcelEncoder::COLUMNS_AUTOSIZE_KEY``` (boolean): column autosize feature (encoding only) [default: ```true```]
 - ```ExcelEncoder::COLUMNS_MAXSIZE_KEY``` (integer): column maxsize feature (encoding only) [default: ```50```]
-- ```ExcelEncoder::CSV_DELIMITER_KEY``` (string): columns separator (CSV decoding only) [default: ```;```]
-- ```ExcelEncoder::CSV_ENCLOSURE_KEY``` (string): Cell values enclosure (CSV decoding only) [default: ```"```]
 
 ### Encoding
 
@@ -86,38 +84,21 @@ file_put_contents('my_excel_file.xlsx', $xls);
 **Accepted formats:**
 - ```ExcelEncoder::XLS```
 - ```ExcelEncoder::XLSX```
-- ```ExcelEncoder::SPREADSHEET``` *The component ```phpspreadsheet``` will try to resolve format automatically*
-
-Please read [phpspreadsheet documentation](https://phpspreadsheet.readthedocs.io/en/latest/) to know wich file format can be read.
-
-**Accepted data format in 2019:**
-- Open Document Format/OASIS (.ods)
-- Office Open XML (.xlsx) Excel 2007 and above
-- BIFF 8 (.xls) Excel 97 and above
-- BIFF 5 (.xls) Excel 95
-- SpreadsheetML (.xml) Excel 2003
-- Gnumeric
-- HTML
-- SYLK
-- CSV
-
-**/!\ When the format does not support multi-sheets (CSV for example), the component real only the first sheet called ```Worksheet```.**
 
 ```php
-<?php
 // Create the encoder...
 
 // Decode data with no specific format
-$data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::SPREADSHEET);
+$data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::XLS);
 
 var_dump($data);
 
 // Output:
 // 
 // array(1) {
-//  ["Sheet_0"]=> array(1) {
-//    [0]=> array(15) {
-//      ["bool"] => int(0)
+//  ["Sheet_0"] => array(1) { // Name of the sheet
+//    [0] => array(15) { // First row
+//      ["bool"] => int(0) // First cell
 //      ["int"] => int(1)
 //      ["float"] => float(1.618)
 //      ["string"] => string(5) "Hello"
@@ -135,7 +116,61 @@ var_dump($data);
 //    }
 //  }
 // }
+```
 
+#### Headers
+
+By default, the encoder loads data as collection: the header name is the key of each data. 
+Indeed, the default value of context parameter ```ExcelEncoder::AS_COLLECTION_KEY``` is ```true```. 
+To disable this feature, pass the context parameter as ```false```.
+
+```php
+$data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::XLS, [
+    ExcelEncoder::AS_COLLECTION_KEY => false
+]);
+```
+
+```
+// Output:
+// 
+// array(1) {
+//  ["Sheet_0"] => array(1) { // Name of the sheet
+//    [0] => array(15) { // Headers row
+//      0 => "bool" // First cell
+//      1 => "int"
+//      2 => "float"
+//      3 => "string"
+//      4 => "object.date"
+//      5 => "object.timezone_type"
+//      6 => "object.timezone"
+//      7 => "array.bool"
+//      8 => "array.int"
+//      9 => "array.float"
+//      10 => "array.string"
+//      11 => "array.object.date"
+//      12 => "array.object.timezone_type"
+//      13 => "array.object.timezone"
+//      14 => "array.array.0"
+//    },
+//    [1] => array(15) { // First data row
+//      [0] => int(0) // First cell
+//      [1] => int(1)
+//      [2] => float(1.618)
+//      [3] => string(5) "Hello"
+//      [4] => string(26) "2000-01-01 13:37:00.000000"
+//      [5] => int(3)
+//      [6] => string(13) "Europe/Berlin"
+//      [7] => int(1)
+//      [8] => int(3)
+//      [9] => float(3.14)
+//      [10] => string(5) "World"
+//      [11] => string(26) "2000-01-01 13:37:00.000000"
+//      [12] => int(3)
+//      [13] => string(13) "Europe/Berlin"
+//      [14] => string(5) "again"
+//    }
+//  }
+// }
 ```
 
 ## Run tests
@@ -147,23 +182,3 @@ var_dump($data);
 ```$ vendor/bin/simple-phpunit```
 
 That's it!
-
-## Update logs
-
-**v1.0.3**
-
-- Updated ```composer.json``` to support PHP ```8.0```
-
-**v1.0.2**
-
-- Updated ```composer.json``` to support Symfony components ```^5.0```
-
-**v1.0.1**
-
-- Fix code
-- Fix dependencies
-- Updated ```README.md```
-
-**v1.0.0**
-
-- First release
