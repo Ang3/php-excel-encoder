@@ -14,6 +14,10 @@ composer require ang3/php-excel-encoder
 
 If you install this component outside of a Symfony application, you must require the vendor/autoload.php file in your code to enable the class autoloading mechanism provided by Composer. Read [this article](https://symfony.com/doc/current/components/using_components.html) for more details.
 
+## Upgrade
+
+To upgrade from 1.x to 2.x, please read the file [UPGRADE-2.0.md](/UPGRADE-2.0.md).
+
 ## Usage
 
 ### Create encoder
