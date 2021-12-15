@@ -1,6 +1,9 @@
 # PHP Excel encoder
 
-[![Build Status](https://travis-ci.org/Ang3/php-excel-encoder.svg?branch=master)](https://travis-ci.org/Ang3/php-excel-encoder) [![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder) [![Latest Unstable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/unstable)](https://packagist.org/packages/ang3/php-excel-encoder) [![Total Downloads](https://poser.pugx.org/ang3/php-excel-encoder/downloads)](https://packagist.org/packages/ang3/php-excel-encoder)
+[![Build Status](https://api.travis-ci.com/Ang3/php-excel-encoder.svg?branch=master)](https://app.travis-ci.com/github/Ang3/php-excel-encoder) 
+[![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder) 
+[![Latest Unstable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/unstable)](https://packagist.org/packages/ang3/php-excel-encoder) 
+[![Total Downloads](https://poser.pugx.org/ang3/php-excel-encoder/downloads)](https://packagist.org/packages/ang3/php-excel-encoder)
 
 Encode and decode xls/xlsx files and more thanks to the component [phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
 
