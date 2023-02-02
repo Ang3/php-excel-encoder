@@ -27,6 +27,8 @@ Summary
 Installation
 ------------
 
+Open a command console and execute the following command to download the latest stable version of this bundle:
+
 ```shell
 composer require ang3/php-excel-encoder
 ```
