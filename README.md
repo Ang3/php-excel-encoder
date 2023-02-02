@@ -18,7 +18,7 @@ Summary
 -------
 
 - [Installation](#installation)
-- [Upgrade from 1.x](#upgrade)
+- [Upgrade](#upgrade)
 - [Usage](#usage)
 - [Symfony integration](#symfony-integration)
 - [Run tests](#run-tests)
@@ -38,7 +38,7 @@ Read [this article](https://symfony.com/doc/current/components/using_components.
 Upgrade
 -------
 
-To upgrade from 1.x to 2.x, please read the file [UPGRADE-2.0.md](/UPGRADE-2.0.md).
+To upgrade from 1.x to 2.x or from 2.x to 3.x, please read the file [UPGRADE-2.0.md](/UPGRADE-2.0.md).
 
 Usage
 -----
