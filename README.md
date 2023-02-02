@@ -1,4 +1,5 @@
-# PHP Excel encoder
+PHP Excel encoder
+=================
 
 [![Build Status](https://api.travis-ci.com/Ang3/php-excel-encoder.svg?branch=master)](https://app.travis-ci.com/github/Ang3/php-excel-encoder) 
 [![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder) 
@@ -9,7 +10,18 @@ Encode and decode xls/xlsx files and more thanks to the component [phpoffice/php
 
 Also, this component uses the component Serializer from package [```symfony/serializer```](https://packagist.org/packages/symfony/serializer) - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
 
-## Installation
+Summary
+-------
+
+- [Installation](#installation)
+- [Upgrade from 1.x](#upgrade)
+- [Usage](#usage)
+- [Symfony integration](#symfony-integration)
+- [Run tests](#run-tests)
+
+
+Installation
+------------
 
 ```shell
 composer require ang3/php-excel-encoder
@@ -17,11 +29,13 @@ composer require ang3/php-excel-encoder
 
 If you install this component outside of a Symfony application, you must require the vendor/autoload.php file in your code to enable the class autoloading mechanism provided by Composer. Read [this article](https://symfony.com/doc/current/components/using_components.html) for more details.
 
-## Upgrade
+Upgrade
+-------
 
 To upgrade from 1.x to 2.x, please read the file [UPGRADE-2.0.md](/UPGRADE-2.0.md).
 
-## Usage
+Usage
+-----
 
 ### Create encoder
 
@@ -180,7 +194,21 @@ $data = $encoder->decode('my_excel_file.xlsx', ExcelEncoder::XLS, [
 // }
 ```
 
-## Run tests
+Symfony integration
+-------------------
+
+The encoder implements the interfaces of the Serializer component. To enable this encoder, you could just 
+configure it as service by adding the contents below into the file `config/services.yaml`:
+
+```yaml
+# config/services.yaml
+services:
+  # ...
+  Ang3\Component\Serializer\Encoder\ExcelEncoder: ~
+```
+
+Run tests
+---------
 
 ```$ git clone https://github.com/Ang3/php-excel-encoder.git```
 

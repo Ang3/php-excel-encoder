@@ -3,7 +3,7 @@
 	"type": "library",
 	"homepage": "https://github.com/Ang3/php-excel-encoder",
 	"description": "PHP Excel encoder",
-    "license": "MIT",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Joanis ROUANET",
@@ -11,20 +11,24 @@
 		}
 	],
 	"autoload": {
-		"psr-4": {"Ang3\\Component\\Serializer\\Encoder\\": "src/"}
+		"psr-4": {
+			"Ang3\\Component\\Serializer\\Encoder\\": "src/"
+		}
 	},
 	"autoload-dev": {
-		"psr-4": { "Ang3\\Component\\Serializer\\Encoder\\Tests\\": "tests/" }
+		"psr-4": {
+			"Ang3\\Component\\Serializer\\Encoder\\Tests\\": "tests/"
+		}
 	},
-    "require": {
-    	"php": "^7.3 || ^8.0",
+	"require": {
+		"php": ">=8.1",
 		"phpoffice/phpspreadsheet": "^1.16",
-		"symfony/serializer": "^4.0 || ^5.0 || ^6.0",
-		"symfony/filesystem": "^4.0 || ^5.0 || ^6.0",
-		"symfony/property-access": "^4.0 || ^5.0 || ^6.0"
+		"symfony/serializer": "^6.0",
+		"symfony/filesystem": "^6.0",
+		"symfony/property-access": "^6.0"
     },
     "require-dev": {
-		"symfony/phpunit-bridge": "^5.0 || ^6.0",
-		"symfony/var-dumper": "^4.0 || ^5.0 || ^6.0"
+		"symfony/phpunit-bridge": "^6.0",
+		"symfony/var-dumper": "^6.0"
     }
 }

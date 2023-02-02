@@ -1,8 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of package ang3/php-excel-encoder
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Ang3\Component\Serializer\Encoder;
 
-use Exception;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\Reader as Readers;
@@ -41,18 +49,13 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
     /**
      * @static
-     *
-     * @var array
      */
-    private static $formats = [
+    private static array $formats = [
         self::XLS,
         self::XLSX,
     ];
 
-    /**
-     * @var array
-     */
-    private $defaultContext = [
+    private array $defaultContext = [
         self::AS_COLLECTION_KEY => true,
         self::FLATTENED_HEADERS_SEPARATOR_KEY => '.',
         self::HEADERS_IN_BOLD_KEY => true,
@@ -61,10 +64,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         self::COLUMNS_MAXSIZE_KEY => 50,
     ];
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     public function __construct(array $defaultContext = [])
     {
@@ -77,7 +77,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     public function supportsEncoding($format): bool
     {
-        return in_array($format, self::$formats);
+        return \in_array($format, self::$formats, true);
     }
 
     /**
@@ -91,7 +91,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     public function encode($data, $format, array $context = []): string
     {
         if (!is_iterable($data)) {
-            throw new NotEncodableValueException(sprintf('Expected data of type iterable, %s given', gettype($data)));
+            throw new NotEncodableValueException(sprintf('Expected data of type iterable, %s given', \gettype($data)));
         }
 
         $context = $this->normalizeContext($context);
@@ -101,12 +101,12 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             // Excel 2007
             case self::XLSX:
                 $writer = new Writers\Xlsx($spreadsheet);
-            break;
+                break;
 
-            // Excel 2003
+                // Excel 2003
             case self::XLS:
                 $writer = new Writers\Xls($spreadsheet);
-            break;
+                break;
 
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
@@ -116,7 +116,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
         foreach ($data as $sheetName => $sheetData) {
             if (!is_iterable($sheetData)) {
-                throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, gettype($sheetData)));
+                throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, \gettype($sheetData)));
             }
 
             if ($sheetIndex === $sheetName) {
@@ -130,7 +130,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             foreach ($sheetData as $rowIndex => $cells) {
                 if (!is_iterable($cells)) {
-                    throw new NotEncodableValueException(sprintf('Expected cells of type "iterable" for data sheet #%d at row #%d, "%s" given', $sheetIndex, $rowIndex, gettype($cells)));
+                    throw new NotEncodableValueException(sprintf('Expected cells of type "iterable" for data sheet #%d at row #%d, "%s" given', $sheetIndex, $rowIndex, \gettype($cells)));
                 }
 
                 $flattened = [];
@@ -154,13 +154,13 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 switch ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
                     case 'left':
                         $alignment = Alignment::HORIZONTAL_LEFT;
-                    break;
+                        break;
                     case 'center':
                         $alignment = Alignment::HORIZONTAL_CENTER;
-                    break;
+                        break;
                     case 'right':
                         $alignment = Alignment::HORIZONTAL_RIGHT;
-                    break;
+                        break;
                     default:
                         throw new InvalidArgumentException(sprintf('The value of context key "%s" is not valid (possible values: "left", "center" or "right")', self::HEADERS_HORIZONTAL_ALIGNMENT_KEY));
                 }
@@ -202,7 +202,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             $writer->save($tmpFile);
             $content = (string) file_get_contents($tmpFile);
             $this->filesystem->remove($tmpFile);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new RuntimeException(sprintf('Excel encoding failed - %s', $e->getMessage()), 0, $e);
         }
 
@@ -214,7 +214,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     public function supportsDecoding($format): bool
     {
-        return in_array($format, self::$formats);
+        return \in_array($format, self::$formats, true);
     }
 
     /**
@@ -227,8 +227,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      */
     public function decode($data, $format, array $context = [])
     {
-        if (!is_scalar($data)) {
-            throw new NotEncodableValueException(sprintf('Expected data of type scalar, %s given', gettype($data)));
+        if (!\is_scalar($data)) {
+            throw new NotEncodableValueException(sprintf('Expected data of type scalar, %s given', \gettype($data)));
         }
 
         $context = $this->normalizeContext($context);
@@ -239,12 +239,12 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             // Excel 2007
             case self::XLSX:
                 $reader = new Readers\Xlsx();
-            break;
+                break;
 
-            // Excel 2003
+                // Excel 2003
             case self::XLS:
                 $reader = new Readers\Xls();
-            break;
+                break;
 
             default:
                 throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
@@ -253,7 +253,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         try {
             $spreadsheet = $reader->load($tmpFile);
             $this->filesystem->remove($tmpFile);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             throw new RuntimeException(sprintf('Excel decoding failed - %s', $e->getMessage()), 0, $e);
         }
 
@@ -264,7 +264,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             $worksheet = $spreadsheet->getSheet($sheetIndex);
             $sheetData = $worksheet->toArray();
 
-            if (0 === count($sheetData)) {
+            if (0 === \count($sheetData)) {
                 continue;
             }
 
@@ -296,7 +296,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 }
 
                 foreach ($cells as $key => $value) {
-                    if (array_key_exists($key, $headers)) {
+                    if (\array_key_exists($key, $headers)) {
                         $labelledRows[$rowIndex - 1][(string) $headers[$key]] = $value;
                     } else {
                         $labelledRows[$rowIndex - 1][''][$key] = $value;
@@ -322,7 +322,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     private function flatten(iterable $data, array &$result, string $keySeparator, string $parentKey = ''): void
     {
         foreach ($data as $key => $value) {
-            if (is_object($value)) {
+            if (\is_object($value)) {
                 $value = get_object_vars($value);
             }
 
@@ -334,8 +334,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             $newKey = $parentKey.$key;
 
-            if (!is_scalar($value)) {
-                throw new NotNormalizableValueException(sprintf('Expected key "%s" of type object, array or scalar, %s given', $newKey, gettype($value)));
+            if (!\is_scalar($value)) {
+                throw new NotNormalizableValueException(sprintf('Expected key "%s" of type object, array or scalar, %s given', $newKey, \gettype($value)));
             }
 
             $result[sprintf('="%s"', $newKey)] = false === $value ? 0 : (true === $value ? 1 : $value);
@@ -359,12 +359,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
     /**
      * @internal
-     *
-     * @param scalar $key
-     *
-     * @return mixed
      */
-    private function getContextValue(array $context, $key)
+    private function getContextValue(array $context, int|string $key): bool|int|float|string|null
     {
         return $context[$key] ?? $this->defaultContext[$key];
     }

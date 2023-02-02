@@ -1,37 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of package ang3/php-excel-encoder
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace Ang3\Component\Serializer\Encoder\Tests;
 
 use Ang3\Component\Serializer\Encoder\ExcelEncoder;
-use DateTime;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @author Joanis ROUANET
+ *
+ * @internal
+ *
+ * @covers \Ang3\Component\Serializer\Encoder\ExcelEncoder
  */
-class ExcelEncoderTest extends TestCase
+final class ExcelEncoderTest extends TestCase
 {
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * @var ExcelEncoder
-     */
-    private $encoder;
+    private ExcelEncoder $encoder;
 
     /**
      * Set up test.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->filesystem = new Filesystem();
         $this->encoder = new ExcelEncoder();
     }
 
-    public function dataEncodingProvider(): array
+    public static function dataEncodingProvider(): array
     {
         return [
             [ExcelEncoder::XLS],
@@ -45,7 +47,7 @@ class ExcelEncoderTest extends TestCase
     public function testEncode(string $format): void
     {
         $xls = $this->encoder->encode($this->getInitialData(), 'xlsx');
-        $this->assertIsString('string', (string) $xls);
+        static::assertIsString('string', (string) $xls);
     }
 
     public function dataDecodingProvider(): array
@@ -61,7 +63,7 @@ class ExcelEncoderTest extends TestCase
      */
     public function testDecode(string $file, string $format, array $result): void
     {
-        $this->assertEquals($result, $this->encoder->decode((string) file_get_contents($file), $format));
+        static::assertSame($result, $this->encoder->decode((string) file_get_contents($file), $format));
     }
 
     /**
@@ -75,13 +77,13 @@ class ExcelEncoderTest extends TestCase
                 'int' => 1,
                 'float' => 1.618,
                 'string' => 'Hello',
-                'object' => new DateTime('2000-01-01 13:37:00'),
+                'object' => new \DateTime('2000-01-01 13:37:00'),
                 'array' => [
                     'bool' => true,
                     'int' => 3,
                     'float' => 3.14,
                     'string' => 'World',
-                    'object' => new DateTime('2000-01-01 13:37:00'),
+                    'object' => new \DateTime('2000-01-01 13:37:00'),
                     'array' => [
                         'again',
                     ],
