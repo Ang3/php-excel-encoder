@@ -4,8 +4,7 @@ PHP Excel encoder
 [![Code Quality](https://github.com/Ang3/php-excel-encoder/actions/workflows/php_lint.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/php_lint.yml)
 [![PHPUnit Tests](https://github.com/Ang3/php-excel-encoder/actions/workflows/phpunit.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/phpunit.yml)
 [![Symfony Bundle](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony_integration.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony_integration.yml) 
-[![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder) 
-[![Latest Unstable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/unstable)](https://packagist.org/packages/ang3/php-excel-encoder) 
+[![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder)  
 [![Total Downloads](https://poser.pugx.org/ang3/php-excel-encoder/downloads)](https://packagist.org/packages/ang3/php-excel-encoder)
 
 Encode and decode xls/xlsx files and more thanks to the component [phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
