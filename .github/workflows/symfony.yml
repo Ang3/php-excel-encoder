@@ -1,4 +1,4 @@
-name: Symfony Integration
+name: Symfony
 
 on: [push, pull_request]
 
