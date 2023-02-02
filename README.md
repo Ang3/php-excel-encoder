@@ -3,13 +3,16 @@ PHP Excel encoder
 
 [![Code Quality](https://github.com/Ang3/php-excel-encoder/actions/workflows/php_lint.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/php_lint.yml)
 [![PHPUnit Tests](https://github.com/Ang3/php-excel-encoder/actions/workflows/phpunit.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/phpunit.yml)
-[![Symfony Bundle](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony_integration.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony_integration.yml) 
+[![Symfony Integration](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony.yml/badge.svg)](https://github.com/Ang3/php-excel-encoder/actions/workflows/symfony.yml) 
 [![Latest Stable Version](https://poser.pugx.org/ang3/php-excel-encoder/v/stable)](https://packagist.org/packages/ang3/php-excel-encoder)  
 [![Total Downloads](https://poser.pugx.org/ang3/php-excel-encoder/downloads)](https://packagist.org/packages/ang3/php-excel-encoder)
 
-Encode and decode xls/xlsx files and more thanks to the component [phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
+Encode and decode xls/xlsx files and more thanks to the component 
+[phpoffice/phpspreadsheet](https://phpspreadsheet.readthedocs.io/en/latest/).
 
-Also, this component uses the component Serializer from package [```symfony/serializer```](https://packagist.org/packages/symfony/serializer) - Please read [documentation](https://symfony.com/doc/current/components/serializer.html) for more informations about serializer usage.
+Also, this component uses the component Serializer from package 
+[```symfony/serializer```](https://packagist.org/packages/symfony/serializer) - Please read the 
+[documentation](https://symfony.com/doc/current/components/serializer.html) for more information about serializer usage.
 
 Summary
 -------
@@ -28,7 +31,9 @@ Installation
 composer require ang3/php-excel-encoder
 ```
 
-If you install this component outside of a Symfony application, you must require the vendor/autoload.php file in your code to enable the class autoloading mechanism provided by Composer. Read [this article](https://symfony.com/doc/current/components/using_components.html) for more details.
+If you install this component outside of a Symfony application, you must require the vendor/autoload.php 
+file in your code to enable the class autoloading mechanism provided by Composer. 
+Read [this article](https://symfony.com/doc/current/components/using_components.html) for more details.
 
 Upgrade
 -------
