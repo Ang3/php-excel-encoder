@@ -119,8 +119,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, \gettype($sheetData)));
             }
 
-            if ($sheetIndex === $sheetName) {
-                $sheetName = sprintf('Sheet_%d', $sheetIndex);
+            if ($sheetIndex > 0) {
+                $spreadsheet->createSheet($sheetIndex);
             }
 
             $spreadsheet->setActiveSheetIndex($sheetIndex);
@@ -195,6 +195,8 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                     $columnDimension->setWidth($context[self::COLUMNS_MAXSIZE_KEY]);
                 }
             }
+
+            ++$sheetIndex;
         }
 
         try {
