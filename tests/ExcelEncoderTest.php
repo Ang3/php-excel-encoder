@@ -73,9 +73,47 @@ final class ExcelEncoderTest extends TestCase
                         'array.array.0' => 'again',
                     ],
                 ],
+                'Feuil1' => [
+                    [
+                        'bool' => 0.0,
+                        'int' => 1,
+                        'float' => 1.618,
+                        'string' => 'Hello',
+                        'object.date' => '2000-01-01 13:37:00.000000',
+                        'object.timezone_type' => 3,
+                        'object.timezone' => 'Europe/Berlin',
+                        'array.bool' => 1,
+                        'array.int' => 3,
+                        'array.float' => 3.14,
+                        'array.string' => 'World',
+                        'array.object.date' => '2000-01-01 13:37:00.000000',
+                        'array.object.timezone_type' => 3,
+                        'array.object.timezone' => 'Europe/Berlin',
+                        'array.array.0' => 'again',
+                    ],
+                ],
             ]],
             [__DIR__.'/Resources/encoded.xlsx', ExcelEncoder::XLSX, [
                 'Sheet_0' => [
+                    [
+                        'bool' => 0,
+                        'int' => 1,
+                        'float' => 1.618,
+                        'string' => 'Hello',
+                        'object.date' => '2000-01-01 13:37:00.000000',
+                        'object.timezone_type' => 3,
+                        'object.timezone' => 'Europe/Berlin',
+                        'array.bool' => 1,
+                        'array.int' => 3,
+                        'array.float' => 3.14,
+                        'array.string' => 'World',
+                        'array.object.date' => '2000-01-01 13:37:00.000000',
+                        'array.object.timezone_type' => 3,
+                        'array.object.timezone' => 'Europe/Berlin',
+                        'array.array.0' => 'again',
+                    ],
+                ],
+                'Feuil1' => [
                     [
                         'bool' => 0,
                         'int' => 1,
@@ -111,50 +149,43 @@ final class ExcelEncoderTest extends TestCase
      */
     private function getInitialData(): array
     {
-        return [[
-            [
-                'bool' => false,
-                'int' => 1,
-                'float' => 1.618,
-                'string' => 'Hello',
-                'object' => new \DateTime('2000-01-01 13:37:00'),
-                'array' => [
-                    'bool' => true,
-                    'int' => 3,
-                    'float' => 3.14,
-                    'string' => 'World',
-                    'object' => new \DateTime('2000-01-01 13:37:00'),
-                    'array' => [
-                        'again',
-                    ],
-                ],
-            ],
-        ]];
-    }
-
-    /**
-     * @internal
-     */
-    private function getDecodedData(string $sheetName): array
-    {
         return [
-            $sheetName => [
+            'Sheet_0' => [
                 [
-                    'bool' => 0.0,
+                    'bool' => false,
                     'int' => 1,
                     'float' => 1.618,
                     'string' => 'Hello',
-                    'object.date' => '2000-01-01 13:37:00.000000',
-                    'object.timezone_type' => 3,
-                    'object.timezone' => 'Europe/Berlin',
-                    'array.bool' => 1,
-                    'array.int' => 3,
-                    'array.float' => 3.14,
-                    'array.string' => 'World',
-                    'array.object.date' => '2000-01-01 13:37:00.000000',
-                    'array.object.timezone_type' => 3,
-                    'array.object.timezone' => 'Europe/Berlin',
-                    'array.array.0' => 'again',
+                    'object' => new \DateTime('2000-01-01 13:37:00'),
+                    'array' => [
+                        'bool' => true,
+                        'int' => 3,
+                        'float' => 3.14,
+                        'string' => 'World',
+                        'object' => new \DateTime('2000-01-01 13:37:00'),
+                        'array' => [
+                            'again',
+                        ],
+                    ],
+                ],
+            ],
+            'Feuil1' => [
+                [
+                    'bool' => false,
+                    'int' => 1,
+                    'float' => 1.618,
+                    'string' => 'Hello',
+                    'object' => new \DateTime('2000-01-01 13:37:00'),
+                    'array' => [
+                        'bool' => true,
+                        'int' => 3,
+                        'float' => 3.14,
+                        'string' => 'World',
+                        'object' => new \DateTime('2000-01-01 13:37:00'),
+                        'array' => [
+                            'again',
+                        ],
+                    ],
                 ],
             ],
         ];
