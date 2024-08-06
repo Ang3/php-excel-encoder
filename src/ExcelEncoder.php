@@ -227,7 +227,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      * @throws RuntimeException           When data reading failed
      * @throws PhpSpreadsheetException    On data failure
      */
-    public function decode($data, $format, array $context = [])
+    public function decode($data, $format, array $context = []): mixed
     {
         if (!\is_scalar($data)) {
             throw new NotEncodableValueException(sprintf('Expected data of type scalar, %s given', \gettype($data)));
