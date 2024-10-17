@@ -30,7 +30,7 @@ Installation
 Open a command console and execute the following command to download the latest stable version of this bundle:
 
 ```shell
-composer require ang3/php-excel-encoder
+composer require assoconnect/php-excel-encoder
 ```
 
 If you install this component outside of a Symfony application, you must require the vendor/autoload.php 
@@ -52,7 +52,7 @@ Usage
 
 require_once 'vendor/autoload.php';
 
-use Ang3\Component\Serializer\Encoder\ExcelEncoder;
+use assoconnect\Serializer\Encoder\ExcelEncoder;
 
 // Create the encoder with default context
 $encoder = new ExcelEncoder($defaultContext = []);
@@ -212,13 +212,13 @@ configure it as service by adding the contents below into the file `config/servi
 # config/services.yaml
 services:
   # ...
-  Ang3\Component\Serializer\Encoder\ExcelEncoder: ~
+  AssoConnect\Serializer\Encoder\ExcelEncoder: ~
 ```
 
 Run tests
 ---------
 
-```$ git clone https://github.com/Ang3/php-excel-encoder.git```
+```$ git clone https://github.com/assoconnect/php-excel-encoder.git```
 
 ```$ composer install```
 
