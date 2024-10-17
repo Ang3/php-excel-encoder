@@ -27,6 +27,12 @@
 		"symfony/filesystem": "^6.0|^7.0"
     },
     "require-dev": {
-		"symfony/test-pack": "^1.0"
+		"symfony/test-pack": "^1.0",
+		"assoconnect/php-quality-config": "^1.11"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

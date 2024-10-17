@@ -97,26 +97,23 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
         $context = $this->normalizeContext($context);
         $spreadsheet = new Spreadsheet();
 
-        switch ($format) {
-            // Excel 2007
-            case self::XLSX:
-                $writer = new Writers\Xlsx($spreadsheet);
-                break;
-
-                // Excel 2003
-            case self::XLS:
-                $writer = new Writers\Xls($spreadsheet);
-                break;
-
-            default:
-                throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format));
-        }
+        $writer = match ($format) {
+            self::XLSX => new Writers\Xlsx($spreadsheet),
+            self::XLS => new Writers\Xls($spreadsheet),
+            default => throw new InvalidArgumentException(sprintf('The format "%s" is not supported', $format)),
+        };
 
         $sheetIndex = 0;
 
         foreach ($data as $sheetName => $sheetData) {
             if (!is_iterable($sheetData)) {
-                throw new NotEncodableValueException(sprintf('Expected data of sheet #%d of type "iterable", "%s" given', $sheetName, \gettype($sheetData)));
+                throw new NotEncodableValueException(
+                    sprintf(
+                        'Expected data of sheet #%d of type "iterable", "%s" given',
+                        $sheetName,
+                        \gettype($sheetData)
+                    )
+                );
             }
 
             if ($sheetIndex > 0) {
@@ -130,7 +127,14 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             foreach ($sheetData as $rowIndex => $cells) {
                 if (!is_iterable($cells)) {
-                    throw new NotEncodableValueException(sprintf('Expected cells of type "iterable" for data sheet #%d at row #%d, "%s" given', $sheetIndex, $rowIndex, \gettype($cells)));
+                    throw new NotEncodableValueException(
+                        sprintf(
+                            'Expected cells of type "iterable" for data sheet #%d at row #%d, "%s" given',
+                            $sheetIndex,
+                            $rowIndex,
+                            \gettype($cells)
+                        )
+                    );
                 }
 
                 $flattened = [];
@@ -148,41 +152,36 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
 
             array_unshift($sheetData, $headers);
             $worksheet->fromArray($sheetData, null, 'A1', true);
-            $headerLineStyle = $worksheet->getStyle('A1:'.$worksheet->getHighestDataColumn().'1');
+            $headerLineStyle = $worksheet->getStyle('A1:' . $worksheet->getHighestDataColumn() . '1');
 
             if ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
-                switch ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
-                    case 'left':
-                        $alignment = Alignment::HORIZONTAL_LEFT;
-                        break;
-                    case 'center':
-                        $alignment = Alignment::HORIZONTAL_CENTER;
-                        break;
-                    case 'right':
-                        $alignment = Alignment::HORIZONTAL_RIGHT;
-                        break;
-                    default:
-                        throw new InvalidArgumentException(sprintf('The value of context key "%s" is not valid (possible values: "left", "center" or "right")', self::HEADERS_HORIZONTAL_ALIGNMENT_KEY));
-                }
+                $alignment = match ($context[self::HEADERS_HORIZONTAL_ALIGNMENT_KEY]) {
+                    'left' => Alignment::HORIZONTAL_LEFT,
+                    'center' => Alignment::HORIZONTAL_CENTER,
+                    'right' => Alignment::HORIZONTAL_RIGHT,
+                    default => throw new InvalidArgumentException(
+                        sprintf(
+                            'The value of context key "%s" is not valid (possible values: "left", "center" or "right")',
+                            self::HEADERS_HORIZONTAL_ALIGNMENT_KEY
+                        )
+                    ),
+                };
 
                 $headerLineStyle
                     ->getAlignment()
-                    ->setHorizontal($alignment)
-                ;
+                    ->setHorizontal($alignment);
             }
 
             if (true === $context[self::HEADERS_IN_BOLD_KEY]) {
                 $headerLineStyle
                     ->getFont()
-                    ->setBold(true)
-                ;
+                    ->setBold(true);
             }
 
             for ($i = 1; $i <= Coordinate::columnIndexFromString($worksheet->getHighestDataColumn()); ++$i) {
                 $worksheet
                     ->getColumnDimensionByColumn($i)
-                    ->setAutoSize($context[self::COLUMNS_AUTOSIZE_KEY])
-                ;
+                    ->setAutoSize($context[self::COLUMNS_AUTOSIZE_KEY]);
             }
 
             $worksheet->calculateColumnWidths();
@@ -227,7 +226,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
      * @throws RuntimeException           When data reading failed
      * @throws PhpSpreadsheetException    On data failure
      */
-    public function decode($data, $format, array $context = []): mixed
+    public function decode($data, $format, array $context = [])
     {
         if (!\is_scalar($data)) {
             throw new NotEncodableValueException(sprintf('Expected data of type scalar, %s given', \gettype($data)));
@@ -243,7 +242,7 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
                 $reader = new Readers\Xlsx();
                 break;
 
-                // Excel 2003
+            // Excel 2003
             case self::XLS:
                 $reader = new Readers\Xls();
                 break;
@@ -317,9 +316,9 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     }
 
     /**
+     * @throws NotNormalizableValueException when a value is not valid
      * @internal
      *
-     * @throws NotNormalizableValueException when a value is not valid
      */
     private function flatten(iterable $data, array &$result, string $keySeparator, string $parentKey = ''): void
     {
@@ -329,15 +328,17 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
             }
 
             if (is_iterable($value)) {
-                $this->flatten($value, $result, $keySeparator, $parentKey.$key.$keySeparator);
+                $this->flatten($value, $result, $keySeparator, $parentKey . $key . $keySeparator);
 
                 continue;
             }
 
-            $newKey = $parentKey.$key;
+            $newKey = $parentKey . $key;
 
             if (!\is_scalar($value)) {
-                throw new NotNormalizableValueException(sprintf('Expected key "%s" of type object, array or scalar, %s given', $newKey, \gettype($value)));
+                throw new NotNormalizableValueException(
+                    sprintf('Expected key "%s" of type object, array or scalar, %s given', $newKey, \gettype($value))
+                );
             }
 
             $result[sprintf('="%s"', $newKey)] = false === $value ? 0 : (true === $value ? 1 : $value);
@@ -351,9 +352,15 @@ class ExcelEncoder implements EncoderInterface, DecoderInterface
     {
         return [
             self::AS_COLLECTION_KEY => (bool) $this->getContextValue($context, self::AS_COLLECTION_KEY),
-            self::FLATTENED_HEADERS_SEPARATOR_KEY => (string) $this->getContextValue($context, self::FLATTENED_HEADERS_SEPARATOR_KEY),
+            self::FLATTENED_HEADERS_SEPARATOR_KEY => (string) $this->getContextValue(
+                $context,
+                self::FLATTENED_HEADERS_SEPARATOR_KEY
+            ),
             self::HEADERS_IN_BOLD_KEY => (bool) $this->getContextValue($context, self::HEADERS_IN_BOLD_KEY),
-            self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => (string) $this->getContextValue($context, self::HEADERS_HORIZONTAL_ALIGNMENT_KEY),
+            self::HEADERS_HORIZONTAL_ALIGNMENT_KEY => (string) $this->getContextValue(
+                $context,
+                self::HEADERS_HORIZONTAL_ALIGNMENT_KEY
+            ),
             self::COLUMNS_AUTOSIZE_KEY => (bool) $this->getContextValue($context, self::COLUMNS_AUTOSIZE_KEY),
             self::COLUMNS_MAXSIZE_KEY => (int) $this->getContextValue($context, self::COLUMNS_MAXSIZE_KEY),
         ];

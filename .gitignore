@@ -1,7 +1,9 @@
 /bin/
 /vendor/
+.idea/
+.idea
+composer.lock
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.result.cache
 test.php
-.idea/
