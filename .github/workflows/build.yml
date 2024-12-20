@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -49,8 +49,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectName=php-excel-encoder
-            -Dsonar.projectKey=assoconnect_php-excel-encoder
+            -Dsonar.projectName=[your-repo]
+            -Dsonar.projectKey=assoconnect_[your-repo]
             -Dsonar.organization=assoconnect
             -Dsonar.sources=src
             -Dsonar.tests=tests

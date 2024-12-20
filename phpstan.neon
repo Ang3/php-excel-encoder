@@ -4,5 +4,4 @@ parameters:
     - %currentWorkingDirectory%/tests/
 
 includes:
-  - phpstan-baseline.neon
   - vendor/assoconnect/php-quality-config/phpstan.extension.neon
