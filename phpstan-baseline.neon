@@ -1,0 +1,46 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot assign float\\|int\\|string to \\$result\\[sprintf\\('\\=\"%%s\"', \\$newKey\\)\\] \\- floats are not allowed\\.$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Comparison float \\> mixed contains non\\-comparable type, only int\\|float\\|string\\|DateTimeInterface or comparable tuple is allowed\\.$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Method AssoConnect\\\\Serializer\\\\Encoder\\\\ExcelEncoder\\:\\:getContextValue\\(\\) cannot have bool\\|float\\|int\\|string\\|null as its return type \\- floats are not allowed\\.$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Only booleans are allowed in an if condition, mixed given\\.$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Overwriting variable \\$data while changing its type from string to array\\{\\}$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Overwriting variable \\$value while changing its type from object to array\\<string, mixed\\>$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Using \\(array\\) is discouraged, please avoid using that\\.$#"
+			count: 1
+			path: src/ExcelEncoder.php
+
+		-
+			message: "#^Method AssoConnect\\\\Serializer\\\\Encoder\\\\Tests\\\\ExcelEncoderTest\\:\\:getInitialData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ExcelEncoderTest.php
+
+		-
+			message: "#^Method AssoConnect\\\\Serializer\\\\Encoder\\\\Tests\\\\ExcelEncoderTest\\:\\:provideDataDecoding\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/ExcelEncoderTest.php

@@ -27,8 +27,8 @@
 	"require": {
 		"php": "^8.2",
 		"phpoffice/phpspreadsheet": "^1.16|^2.0",
-		"symfony/serializer": "^6.0|^7.0",
-		"symfony/filesystem": "^6.0|^7.0"
+		"symfony/serializer": "^6.0",
+		"symfony/filesystem": "^6.0"
 	},
 	"require-dev": {
 		"symfony/test-pack": "^1.0",
