@@ -92,8 +92,8 @@ final class ExcelEncoderTest extends TestCase
     {
         return [
             'bool' => match ($excelFormat) {
-                ExcelEncoder::XLS => 0.0,
-                ExcelEncoder::XLSX => 0,
+                ExcelEncoder::XLS => 0,
+                ExcelEncoder::XLSX => 0.0,
                 default => throw new \InvalidArgumentException('Invalid Excel format: ' . $excelFormat)
             },
             'int' => 1,
